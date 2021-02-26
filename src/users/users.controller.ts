@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { HttpExceptionFilter } from '../common/filters/http-exception.filter';
 import { ForbiddenException } from '../common/exceptions/forbidden.exception';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -20,7 +19,6 @@ const createUserSchema = joi.object({
 
 @Controller('users')
 @UseGuards(RolesGuard)
-@UseFilters(HttpExceptionFilter)
 @UseInterceptors(LoggingInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
