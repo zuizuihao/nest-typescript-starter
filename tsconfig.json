@@ -13,5 +13,6 @@
     "incremental": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "test/users.e2e-spec.ts"]
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["node_modules"]
 }
