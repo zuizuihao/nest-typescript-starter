@@ -3,6 +3,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { HealthModule } from './health/health.module';
+import { HeroModule } from './hero/hero.module';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import DailyRotateFile = require('winston-daily-rotate-file');
@@ -17,14 +18,6 @@ const ENV = process.env.NODE_ENV || 'development';
             path: path.resolve(process.cwd(), path.join('env', `.env.${ENV}`)),
             debug: true
         }),
-        TypeOrmModule.forRootAsync({
-            useFactory: (config: ConfigService) => {
-                return config.get('database');
-            },
-            inject: [ConfigService],
-        }),
-        UsersModule,
-        HealthModule,
         WinstonModule.forRoot({
             exitOnError: false,
             format: format.combine(
@@ -50,6 +43,15 @@ const ENV = process.env.NODE_ENV || 'development';
                 }),
             ],
         }),
+        TypeOrmModule.forRootAsync({
+            useFactory: (config: ConfigService) => {
+                return config.get('database');
+            },
+            inject: [ConfigService],
+        }),
+        UsersModule,
+        HealthModule,
+        HeroModule,
     ],
 })
 export class AppModule implements NestModule {
