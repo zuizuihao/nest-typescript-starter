@@ -6,19 +6,22 @@ import { HealthModule } from './health/health.module';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import DailyRotateFile = require('winston-daily-rotate-file');
+import { ConfigModule, ConfigService } from 'nestjs-config';
+import path = require('path');
 const format = winston.format;
+const ENV = process.env.NODE_ENV || 'development';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
-            type: 'mysql',
-            host: 'localhost',
-            port: 3306,
-            username: 'root',
-            password: 'root',
-            database: 'test',
-            autoLoadEntities: true,
-            synchronize: true,
+        ConfigModule.load(path.resolve(__dirname, 'config/!(*.d).{ts,js}'), {
+            path: path.resolve(process.cwd(), path.join('env', `.env.${ENV}`)),
+            debug: true
+        }),
+        TypeOrmModule.forRootAsync({
+            useFactory: (config: ConfigService) => {
+                return config.get('database');
+            },
+            inject: [ConfigService],
         }),
         UsersModule,
         HealthModule,
